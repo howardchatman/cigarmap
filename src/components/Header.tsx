@@ -48,6 +48,9 @@ export function Header() {
             <Button asChild>
               <Link href="/add-lounge">Add a Lounge</Link>
             </Button>
+            <Button asChild className="bg-orange hover:bg-orange-dark text-white">
+              <Link href="/login">Sign In</Link>
+            </Button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -88,6 +91,11 @@ export function Header() {
               <Button asChild className="w-full">
                 <Link href="/add-lounge" onClick={() => setMobileMenuOpen(false)}>
                   Add a Lounge
+                </Link>
+              </Button>
+              <Button asChild className="w-full bg-orange hover:bg-orange-dark text-white">
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                  Sign In
                 </Link>
               </Button>
             </div>

@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* CigarMap Design System
+   Brand Colors:
+   - Dark Brown #3C2015 (headers, background accents)
+   - Teal #01A6B4 (CTAs, highlights)
+   - Warm Orange #F7881F (hover states, accents)
+   - Off-white #F7F5E8 (backgrounds)
+*/
+
+@theme {
+  --font-sans: 'Alata', sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
+  /* Brand colors */
+  --color-brown: hsl(22, 47%, 16%);
+  --color-brown-dark: hsl(22, 47%, 10%);
+  --color-brown-light: hsl(22, 40%, 25%);
+
+  --color-teal: hsl(184, 99%, 36%);
+  --color-teal-dark: hsl(184, 99%, 28%);
+  --color-teal-light: hsl(184, 80%, 45%);
+
+  --color-orange: hsl(32, 93%, 55%);
+  --color-orange-dark: hsl(32, 93%, 45%);
+  --color-orange-light: hsl(32, 93%, 65%);
+
+  --color-cream: hsl(48, 43%, 94%);
+  --color-cream-dark: hsl(48, 43%, 88%);
+
+  /* Semantic colors using CSS variables */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Off-white background */
+  --background: 48 43% 94%;
+  --foreground: 22 47% 16%;
+
+  /* Card styling - slightly warmer */
+  --card: 48 43% 96%;
+  --card-foreground: 22 47% 16%;
+
+  --popover: 48 43% 96%;
+  --popover-foreground: 22 47% 16%;
+
+  /* Teal primary #01A6B4 */
+  --primary: 184 99% 36%;
+  --primary-foreground: 48 43% 96%;
+
+  /* Brown secondary #3C2015 */
+  --secondary: 22 47% 16%;
+  --secondary-foreground: 48 43% 94%;
+
+  --muted: 40 20% 88%;
+  --muted-foreground: 22 20% 40%;
+
+  /* Orange accent #F7881F */
+  --accent: 32 93% 55%;
+  --accent-foreground: 22 47% 10%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 48 43% 96%;
+
+  --border: 40 20% 80%;
+  --input: 40 20% 85%;
+  --ring: 184 99% 36%;
+
+  --sidebar-background: 22 47% 12%;
+  --sidebar-foreground: 48 43% 94%;
+  --sidebar-primary: 184 99% 36%;
+  --sidebar-primary-foreground: 48 43% 96%;
+  --sidebar-accent: 22 40% 20%;
+  --sidebar-accent-foreground: 48 43% 94%;
+  --sidebar-border: 22 30% 25%;
+  --sidebar-ring: 184 99% 36%;
+}
+
+.dark {
+  /* Dark brown background #3C2015 */
+  --background: 22 47% 10%;
+  --foreground: 48 43% 94%;
+
+  --card: 22 40% 14%;
+  --card-foreground: 48 43% 94%;
+
+  --popover: 22 40% 14%;
+  --popover-foreground: 48 43% 94%;
+
+  /* Teal primary */
+  --primary: 184 99% 36%;
+  --primary-foreground: 22 47% 10%;
+
+  /* Off-white secondary */
+  --secondary: 22 30% 22%;
+  --secondary-foreground: 48 43% 94%;
+
+  --muted: 22 25% 20%;
+  --muted-foreground: 40 15% 60%;
+
+  /* Orange accent */
+  --accent: 32 93% 55%;
+  --accent-foreground: 22 47% 10%;
+
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 48 43% 94%;
+
+  --border: 22 30% 25%;
+  --input: 22 30% 25%;
+  --ring: 184 99% 36%;
+
+  --sidebar-background: 22 47% 8%;
+  --sidebar-foreground: 48 43% 94%;
+  --sidebar-primary: 184 99% 36%;
+  --sidebar-primary-foreground: 22 47% 10%;
+  --sidebar-accent: 22 40% 18%;
+  --sidebar-accent-foreground: 48 43% 94%;
+  --sidebar-border: 22 30% 20%;
+  --sidebar-ring: 184 99% 36%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans), sans-serif;
+  letter-spacing: -0.025em;
+}

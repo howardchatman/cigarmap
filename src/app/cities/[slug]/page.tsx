@@ -3,22 +3,76 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { Layout } from '@/components/Layout';
 import { LoungeCard } from '@/components/LoungeCard';
-import { getCityBySlug, getLoungesByCity } from '@/data/mockData';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Filter, X } from 'lucide-react';
+import { ArrowRight, Filter, X, Loader2 } from 'lucide-react';
 import { LoungeType, Amenity } from '@/types';
 
 const loungeTypes: LoungeType[] = ['Lounge', 'Bar', 'Retail', 'Private Club'];
-const amenities: Amenity[] = ['BYOB', 'Full Bar', 'Outdoor Patio', 'Live Music', 'TVs'];
+const amenitiesList: Amenity[] = ['BYOB', 'Full Bar', 'Outdoor Patio', 'Live Music', 'TVs'];
 
 export default function CityDetail() {
   const params = useParams<{ slug: string }>();
   const slug = params?.slug || '';
-  const city = getCityBySlug(slug);
-  const allLounges = getLoungesByCity(city?.id || '');
+  const supabase = createClient();
+
+  // Fetch city by slug
+  const { data: city, isLoading: cityLoading, error: cityError } = useQuery({
+    queryKey: ['city', slug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('cities')
+        .select('*')
+        .eq('slug', slug)
+        .single();
+      if (error) throw error;
+      return {
+        id: data.id,
+        name: data.name,
+        slug: data.slug,
+        description: data.description,
+        heroImage: data.hero_image || 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=800&auto=format&fit=crop',
+      };
+    },
+    enabled: !!slug,
+  });
+
+  // Fetch lounges for this city
+  const { data: allLounges = [], isLoading: loungesLoading } = useQuery({
+    queryKey: ['city-lounges', city?.id],
+    queryFn: async () => {
+      if (!city?.id) return [];
+      const { data, error } = await supabase
+        .from('lounges')
+        .select('*, cities(name)')
+        .eq('city_id', city.id)
+        .eq('status', 'approved')
+        .order('is_featured', { ascending: false });
+      if (error) throw error;
+      return data.map((lounge: any) => ({
+        id: lounge.id,
+        name: lounge.name,
+        cityId: lounge.city_id,
+        cityName: lounge.cities?.name,
+        address: lounge.address,
+        phone: lounge.phone,
+        website: lounge.website,
+        description: lounge.description,
+        loungeType: lounge.lounge_type as LoungeType,
+        amenities: lounge.amenities || [],
+        images: lounge.images || [],
+        isFeatured: lounge.is_featured,
+        isClaimed: lounge.is_claimed,
+      }));
+    },
+    enabled: !!city?.id,
+  });
+
+  const isLoading = cityLoading || loungesLoading;
 
   const [selectedTypes, setSelectedTypes] = useState<LoungeType[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
@@ -59,7 +113,19 @@ export default function CityDetail() {
 
   const hasActiveFilters = selectedTypes.length > 0 || selectedAmenities.length > 0 || featuredOnly;
 
-  if (!city) {
+  // Loading state
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  // City not found
+  if (cityError || !city) {
     return (
       <Layout>
         <div className="py-20 text-center">
@@ -130,7 +196,7 @@ export default function CityDetail() {
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Amenities</p>
                 <div className="flex flex-wrap gap-2">
-                  {amenities.map(amenity => (
+                  {amenitiesList.map(amenity => (
                     <Badge
                       key={amenity}
                       variant={selectedAmenities.includes(amenity) ? 'default' : 'outline'}
@@ -178,10 +244,16 @@ export default function CityDetail() {
             </div>
           ) : (
             <div className="text-center py-12 bg-card rounded-lg border border-border">
-              <p className="text-muted-foreground mb-4">No lounges match your filters.</p>
-              <Button variant="outline" onClick={clearFilters}>
-                Clear Filters
-              </Button>
+              <p className="text-muted-foreground mb-4">
+                {allLounges.length === 0
+                  ? 'No lounges have been added to this city yet.'
+                  : 'No lounges match your filters.'}
+              </p>
+              {hasActiveFilters && (
+                <Button variant="outline" onClick={clearFilters}>
+                  Clear Filters
+                </Button>
+              )}
             </div>
           )}
         </div>

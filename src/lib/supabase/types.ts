@@ -98,6 +98,12 @@ export interface Database {
           subscription_plan_id: string | null
           subscription_status: 'none' | 'active' | 'canceled' | 'past_due'
           subscription_ends_at: string | null
+          instagram: string | null
+          facebook: string | null
+          twitter: string | null
+          tiktok: string | null
+          cover_image: string | null
+          wants_website: boolean
           created_at: string
           updated_at: string
         }
@@ -120,6 +126,12 @@ export interface Database {
           subscription_plan_id?: string | null
           subscription_status?: 'none' | 'active' | 'canceled' | 'past_due'
           subscription_ends_at?: string | null
+          instagram?: string | null
+          facebook?: string | null
+          twitter?: string | null
+          tiktok?: string | null
+          cover_image?: string | null
+          wants_website?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -142,6 +154,12 @@ export interface Database {
           subscription_plan_id?: string | null
           subscription_status?: 'none' | 'active' | 'canceled' | 'past_due'
           subscription_ends_at?: string | null
+          instagram?: string | null
+          facebook?: string | null
+          twitter?: string | null
+          tiktok?: string | null
+          cover_image?: string | null
+          wants_website?: boolean
           created_at?: string
           updated_at?: string
         }

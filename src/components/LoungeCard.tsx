@@ -1,16 +1,27 @@
 import Link from 'next/link'
-import Image from 'next/image'
-import { Lounge } from '@/types'
-import { cities } from '@/data/mockData'
 import { MapPin, Star, CheckCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 interface LoungeCardProps {
-  lounge: Lounge
+  lounge: {
+    id: string;
+    name: string;
+    cityId?: string;
+    cityName?: string;
+    address?: string;
+    phone?: string;
+    website?: string;
+    description?: string;
+    loungeType?: string;
+    amenities?: string[];
+    images?: string[];
+    isFeatured?: boolean;
+    isClaimed?: boolean;
+  };
 }
 
 export function LoungeCard({ lounge }: LoungeCardProps) {
-  const city = cities.find(c => c.id === lounge.cityId)
+  const defaultImage = 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=800&auto=format&fit=crop';
 
   return (
     <Link
@@ -19,8 +30,8 @@ export function LoungeCard({ lounge }: LoungeCardProps) {
     >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden">
-        <img 
-          src={lounge.images[0]} 
+        <img
+          src={lounge.images?.[0] || defaultImage}
           alt={lounge.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -48,30 +59,36 @@ export function LoungeCard({ lounge }: LoungeCardProps) {
           {lounge.name}
         </h3>
         
-        <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
-          <MapPin className="h-4 w-4 shrink-0" />
-          <span className="truncate">{city?.name}</span>
-        </div>
+        {lounge.cityName && (
+          <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
+            <MapPin className="h-4 w-4 shrink-0" />
+            <span className="truncate">{lounge.cityName}</span>
+          </div>
+        )}
 
-        <div className="flex items-center gap-2 mb-3">
-          <Badge variant="outline" className="text-xs">
-            {lounge.loungeType}
-          </Badge>
-        </div>
+        {lounge.loungeType && (
+          <div className="flex items-center gap-2 mb-3">
+            <Badge variant="outline" className="text-xs">
+              {lounge.loungeType}
+            </Badge>
+          </div>
+        )}
 
         {/* Amenities */}
-        <div className="flex flex-wrap gap-1">
-          {lounge.amenities.slice(0, 3).map(amenity => (
-            <Badge key={amenity} variant="secondary" className="text-xs bg-muted text-muted-foreground">
-              {amenity}
-            </Badge>
-          ))}
-          {lounge.amenities.length > 3 && (
-            <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground">
-              +{lounge.amenities.length - 3}
-            </Badge>
-          )}
-        </div>
+        {lounge.amenities && lounge.amenities.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {lounge.amenities.slice(0, 3).map(amenity => (
+              <Badge key={amenity} variant="secondary" className="text-xs bg-muted text-muted-foreground">
+                {amenity}
+              </Badge>
+            ))}
+            {lounge.amenities.length > 3 && (
+              <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground">
+                +{lounge.amenities.length - 3}
+              </Badge>
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );

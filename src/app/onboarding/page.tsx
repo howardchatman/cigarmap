@@ -308,6 +308,12 @@ export default function Onboarding() {
             description: data.description || null,
             lounge_type: data.businessType === 'lounge' ? 'Lounge' : 'Lounge',
             images: uploadedImageUrls,
+            cover_image: coverUrl,
+            instagram: data.instagram || null,
+            facebook: data.facebook || null,
+            twitter: data.twitter || null,
+            tiktok: data.tiktok || null,
+            wants_website: data.wantsWebsite,
             status: 'pending',
           });
 

@@ -1,14 +1,19 @@
 import Link from 'next/link'
-import { City } from '@/types';
-import { getLoungeCountByCity } from '@/data/mockData';
 import { MapPin } from 'lucide-react';
 
 interface CityCardProps {
-  city: City;
+  city: {
+    id: string;
+    name: string;
+    slug: string;
+    description?: string;
+    heroImage?: string;
+    loungeCount?: number;
+  };
 }
 
 export function CityCard({ city }: CityCardProps) {
-  const loungeCount = getLoungeCountByCity(city.id);
+  const loungeCount = city.loungeCount || 0;
 
   return (
     <Link 
@@ -16,9 +21,9 @@ export function CityCard({ city }: CityCardProps) {
       className="group relative overflow-hidden rounded-lg aspect-[4/3] block"
     >
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-        style={{ backgroundImage: `url(${city.heroImage})` }}
+        style={{ backgroundImage: `url(${city.heroImage || 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=800&auto=format&fit=crop'})` }}
       />
       
       {/* Gradient Overlay */}

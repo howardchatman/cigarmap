@@ -159,7 +159,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={handleSignOut}
+                  onSelect={handleSignOut}
                   className="text-red-600 cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4" />

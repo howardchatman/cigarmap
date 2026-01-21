@@ -2,8 +2,9 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { Layout } from '@/components/Layout';
-import { getLoungeById, cities } from '@/data/mockData';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -13,16 +14,68 @@ import {
   Star,
   CheckCircle,
   ArrowLeft,
-  ExternalLink
+  ExternalLink,
+  Loader2,
+  Instagram,
+  Facebook,
+  Twitter,
 } from 'lucide-react';
 
 export default function LoungeDetail() {
   const params = useParams<{ id: string }>();
   const id = params?.id || '';
-  const lounge = getLoungeById(id);
-  const city = lounge ? cities.find(c => c.id === lounge.cityId) : undefined;
+  const supabase = createClient();
 
-  if (!lounge) {
+  const { data: lounge, isLoading, error } = useQuery({
+    queryKey: ['lounge', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('lounges')
+        .select('*, cities(name, slug)')
+        .eq('id', id)
+        .single();
+      if (error) throw error;
+      return {
+        id: data.id,
+        name: data.name,
+        cityId: data.city_id,
+        cityName: data.cities?.name,
+        citySlug: data.cities?.slug,
+        address: data.address,
+        phone: data.phone,
+        website: data.website,
+        description: data.description,
+        loungeType: data.lounge_type,
+        amenities: data.amenities || [],
+        images: data.images || [],
+        isFeatured: data.is_featured,
+        isClaimed: data.is_claimed,
+        isVerified: data.is_verified,
+        instagram: data.instagram,
+        facebook: data.facebook,
+        twitter: data.twitter,
+        tiktok: data.tiktok,
+        coverImage: data.cover_image,
+      };
+    },
+    enabled: !!id,
+  });
+
+  const defaultImage = 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=800&auto=format&fit=crop';
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  // Not found
+  if (error || !lounge) {
     return (
       <Layout>
         <div className="py-20 text-center">
@@ -41,9 +94,9 @@ export default function LoungeDetail() {
       <div className="bg-muted py-4">
         <div className="container mx-auto px-4">
           <Button variant="ghost" asChild>
-            <Link href={city ? `/cities/${city.slug}` : '/cities'}>
+            <Link href={lounge.citySlug ? `/cities/${lounge.citySlug}` : '/cities'}>
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to {city?.name || 'Cities'}
+              Back to {lounge.cityName || 'Cities'}
             </Link>
           </Button>
         </div>
@@ -52,7 +105,7 @@ export default function LoungeDetail() {
       {/* Hero Image */}
       <section className="relative h-[40vh] md:h-[50vh]">
         <img
-          src={lounge.images[0]}
+          src={lounge.coverImage || lounge.images?.[0] || defaultImage}
           alt={lounge.name}
           className="w-full h-full object-cover"
         />
@@ -73,13 +126,15 @@ export default function LoungeDetail() {
                     Featured
                   </Badge>
                 )}
-                {lounge.isClaimed && (
+                {(lounge.isClaimed || lounge.isVerified) && (
                   <Badge className="bg-primary text-primary-foreground">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Verified
                   </Badge>
                 )}
-                <Badge variant="outline">{lounge.loungeType}</Badge>
+                {lounge.loungeType && (
+                  <Badge variant="outline">{lounge.loungeType}</Badge>
+                )}
               </div>
 
               {/* Title */}
@@ -88,37 +143,43 @@ export default function LoungeDetail() {
               </h1>
 
               {/* Location */}
-              <div className="flex items-center gap-2 text-muted-foreground mb-6">
-                <MapPin className="h-5 w-5" />
-                <span>{city?.name}</span>
-              </div>
+              {lounge.cityName && (
+                <div className="flex items-center gap-2 text-muted-foreground mb-6">
+                  <MapPin className="h-5 w-5" />
+                  <span>{lounge.cityName}</span>
+                </div>
+              )}
 
               {/* Amenities */}
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-foreground mb-3">Amenities</h3>
-                <div className="flex flex-wrap gap-2">
-                  {lounge.amenities.map(amenity => (
-                    <Badge key={amenity} variant="secondary" className="text-sm">
-                      {amenity}
-                    </Badge>
-                  ))}
+              {lounge.amenities && lounge.amenities.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-foreground mb-3">Amenities</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {lounge.amenities.map((amenity: string) => (
+                      <Badge key={amenity} variant="secondary" className="text-sm">
+                        {amenity}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Description */}
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-foreground mb-3">About</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {lounge.description}
-                </p>
-              </div>
+              {lounge.description && (
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-foreground mb-3">About</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {lounge.description}
+                  </p>
+                </div>
+              )}
 
               {/* Image Gallery */}
-              {lounge.images.length > 1 && (
+              {lounge.images && lounge.images.length > 1 && (
                 <div>
                   <h3 className="text-lg font-semibold text-foreground mb-3">Gallery</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {lounge.images.map((image, index) => (
+                    {lounge.images.map((image: string, index: number) => (
                       <img
                         key={index}
                         src={image}
@@ -138,41 +199,87 @@ export default function LoungeDetail() {
 
                 <div className="space-y-4">
                   {/* Address */}
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span className="text-card-foreground">{lounge.address}</span>
-                  </div>
+                  {lounge.address && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-card-foreground">{lounge.address}</span>
+                    </div>
+                  )}
 
                   {/* Phone */}
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-primary shrink-0" />
-                    <a
-                      href={`tel:${lounge.phone}`}
-                      className="text-card-foreground hover:text-primary transition-colors"
-                    >
-                      {lounge.phone}
-                    </a>
-                  </div>
+                  {lounge.phone && (
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 text-primary shrink-0" />
+                      <a
+                        href={`tel:${lounge.phone}`}
+                        className="text-card-foreground hover:text-primary transition-colors"
+                      >
+                        {lounge.phone}
+                      </a>
+                    </div>
+                  )}
 
                   {/* Website */}
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-5 w-5 text-primary shrink-0" />
-                    <a
-                      href={lounge.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-card-foreground hover:text-primary transition-colors flex items-center gap-1"
-                    >
-                      Visit Website
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </div>
+                  {lounge.website && (
+                    <div className="flex items-center gap-3">
+                      <Globe className="h-5 w-5 text-primary shrink-0" />
+                      <a
+                        href={lounge.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-card-foreground hover:text-primary transition-colors flex items-center gap-1"
+                      >
+                        Visit Website
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </div>
+                  )}
                 </div>
+
+                {/* Social Media */}
+                {(lounge.instagram || lounge.facebook || lounge.twitter) && (
+                  <>
+                    <hr className="my-6 border-border" />
+                    <h4 className="text-sm font-semibold text-card-foreground mb-3">Follow Us</h4>
+                    <div className="flex gap-3">
+                      {lounge.instagram && (
+                        <a
+                          href={lounge.instagram.startsWith('http') ? lounge.instagram : `https://instagram.com/${lounge.instagram}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                        >
+                          <Instagram className="h-5 w-5 text-muted-foreground" />
+                        </a>
+                      )}
+                      {lounge.facebook && (
+                        <a
+                          href={lounge.facebook.startsWith('http') ? lounge.facebook : `https://facebook.com/${lounge.facebook}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                        >
+                          <Facebook className="h-5 w-5 text-muted-foreground" />
+                        </a>
+                      )}
+                      {lounge.twitter && (
+                        <a
+                          href={lounge.twitter.startsWith('http') ? lounge.twitter : `https://twitter.com/${lounge.twitter}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+                        >
+                          <Twitter className="h-5 w-5 text-muted-foreground" />
+                        </a>
+                      )}
+                    </div>
+                  </>
+                )}
 
                 <hr className="my-6 border-border" />
 
                 {/* Claim CTA */}
-                {!lounge.isClaimed && (
+                {!lounge.isClaimed && !lounge.isVerified && (
                   <div className="text-center">
                     <p className="text-sm text-muted-foreground mb-4">
                       Is this your lounge?
@@ -185,7 +292,7 @@ export default function LoungeDetail() {
                   </div>
                 )}
 
-                {lounge.isClaimed && (
+                {(lounge.isClaimed || lounge.isVerified) && (
                   <div className="text-center">
                     <Badge className="bg-primary/10 text-primary">
                       <CheckCircle className="h-4 w-4 mr-1" />

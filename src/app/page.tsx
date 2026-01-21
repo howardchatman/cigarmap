@@ -1,14 +1,36 @@
 'use client';
 
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { CityCard } from '@/components/CityCard';
 import { Layout } from '@/components/Layout';
-import { getFeaturedCities } from '@/data/mockData';
-import { MapPin, Plus, ArrowRight } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { MapPin, Plus, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function Home() {
-  const featuredCities = getFeaturedCities();
+  const supabase = createClient();
+
+  const { data: featuredCities = [], isLoading } = useQuery({
+    queryKey: ['featured-cities'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('cities')
+        .select('*, lounges:lounges(count)')
+        .eq('is_featured', true)
+        .order('name');
+      if (error) throw error;
+      return data.map((city: any) => ({
+        id: city.id,
+        name: city.name,
+        slug: city.slug,
+        description: city.description,
+        heroImage: city.hero_image || 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=800&auto=format&fit=crop',
+        isFeatured: city.is_featured,
+        loungeCount: city.lounges?.[0]?.count || 0,
+      }));
+    },
+  });
 
   return (
     <Layout>
@@ -77,17 +99,27 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredCities.map((city, index) => (
-              <div
-                key={city.id}
-                className="opacity-0 animate-fade-in"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                <CityCard city={city} />
-              </div>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : featuredCities.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No featured cities yet. Check back soon!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredCities.map((city, index) => (
+                <div
+                  key={city.id}
+                  className="opacity-0 animate-fade-in"
+                  style={{ animationDelay: `${0.1 * index}s` }}
+                >
+                  <CityCard city={city} />
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Button asChild variant="outline" size="lg">

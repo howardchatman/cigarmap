@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,19 +15,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { cities } from '@/data/mockData';
+import { createClient } from '@/lib/supabase/client';
 import { LoungeType, Amenity } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, Star, Upload, Globe, Loader2 } from 'lucide-react';
 import { firecrawlApi } from '@/lib/api/firecrawl';
 
 const loungeTypes: LoungeType[] = ['Lounge', 'Bar', 'Retail', 'Private Club'];
-const amenities: Amenity[] = ['BYOB', 'Full Bar', 'Outdoor Patio', 'Live Music', 'TVs'];
+const amenitiesList: Amenity[] = ['BYOB', 'Full Bar', 'Outdoor Patio', 'Live Music', 'TVs'];
 
 export default function AddLounge() {
   const { toast } = useToast();
+  const supabase = createClient();
   const [importUrl, setImportUrl] = useState('');
   const [isImporting, setIsImporting] = useState(false);
+
+  // Fetch cities from Supabase
+  const { data: cities = [] } = useQuery({
+    queryKey: ['cities-for-add'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('cities')
+        .select('id, name, slug')
+        .order('name');
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const [formData, setFormData] = useState({
     name: '',
     cityId: '',
@@ -79,7 +95,7 @@ export default function AddLounge() {
           ? scrapedData.amenities.join(' ').toLowerCase()
           : String(scrapedData.amenities).toLowerCase();
 
-        amenities.forEach(amenity => {
+        amenitiesList.forEach(amenity => {
           if (scrapedAmenities.includes(amenity.toLowerCase())) {
             matchedAmenities.push(amenity);
           }
@@ -298,7 +314,7 @@ export default function AddLounge() {
                 <div className="space-y-3">
                   <Label>Amenities</Label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {amenities.map(amenity => (
+                    {amenitiesList.map(amenity => (
                       <div key={amenity} className="flex items-center space-x-2">
                         <Checkbox
                           id={amenity}

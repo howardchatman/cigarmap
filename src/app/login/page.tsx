@@ -71,13 +71,13 @@ function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 to-amber-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <Link href="/" className="inline-block mb-4">
+          <Link href="/" className="inline-flex justify-center mb-4">
             <Image
               src="/logo.png"
               alt="CigarMap.net"
               width={200}
               height={60}
-              className="h-auto"
+              className="h-auto mx-auto"
               priority
             />
           </Link>

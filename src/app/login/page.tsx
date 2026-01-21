@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Cigarette } from 'lucide-react';
+import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -70,9 +71,15 @@ function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 to-amber-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <Link href="/" className="inline-flex items-center justify-center gap-2 mb-4">
-            <Cigarette className="h-8 w-8 text-amber-600" />
-            <span className="text-2xl font-bold text-stone-800">Cigar Compass</span>
+          <Link href="/" className="inline-block mb-4">
+            <Image
+              src="/logo.png"
+              alt="CigarMap.net"
+              width={200}
+              height={60}
+              className="h-auto"
+              priority
+            />
           </Link>
           <CardTitle>Welcome Back</CardTitle>
           <CardDescription>

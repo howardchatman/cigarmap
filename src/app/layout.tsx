@@ -3,7 +3,7 @@ import "./globals.css"
 import { Providers } from "@/components/Providers"
 
 export const metadata: Metadata = {
-  title: "Cigar Compass - Find Your Perfect Cigar Lounge",
+  title: "CigarMap.net - Find Your Perfect Cigar Lounge",
   description: "Discover the finest cigar lounges across America. Browse by city, read reviews, and find your next great smoke.",
 }
 

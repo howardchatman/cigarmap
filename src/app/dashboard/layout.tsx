@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -21,6 +22,7 @@ import {
   Menu,
   X,
   CreditCard,
+  Loader2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -36,10 +38,35 @@ export default function OwnerLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, user, isLoading, needsOnboarding } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Redirect to onboarding if not completed
+  useEffect(() => {
+    if (!isLoading && user && needsOnboarding) {
+      router.replace('/onboarding');
+    }
+  }, [isLoading, user, needsOnboarding, router]);
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+        <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+      </div>
+    );
+  }
+
+  // Redirect to onboarding (will happen in useEffect)
+  if (needsOnboarding) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+        <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+      </div>
+    );
+  }
 
   const handleSignOut = async () => {
     await signOut();

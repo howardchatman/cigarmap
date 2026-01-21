@@ -11,9 +11,11 @@ interface AuthContextType {
   session: Session | null
   isLoading: boolean
   isAdmin: boolean
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>
+  needsOnboarding: boolean
+  signIn: (email: string, password: string) => Promise<{ error: Error | null; needsOnboarding?: boolean }>
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
+  refreshProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -72,11 +74,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
-    return { error: error as Error | null }
+
+    if (error) {
+      return { error: error as Error | null }
+    }
+
+    // Check if user needs onboarding
+    if (data.user) {
+      const profileData = await fetchProfile(data.user.id)
+      const needsOnboarding = !profileData?.onboarding_completed
+      return { error: null, needsOnboarding }
+    }
+
+    return { error: null }
   }
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -100,7 +114,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null)
   }
 
+  const refreshProfile = async () => {
+    if (user) {
+      const profileData = await fetchProfile(user.id)
+      setProfile(profileData)
+    }
+  }
+
   const isAdmin = profile?.role === 'admin'
+  // Treat NULL or FALSE as needing onboarding (onboarding_completed must be explicitly TRUE)
+  const needsOnboarding = profile ? profile.onboarding_completed !== true : false
 
   return (
     <AuthContext.Provider
@@ -110,9 +133,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         isLoading,
         isAdmin,
+        needsOnboarding,
         signIn,
         signUp,
         signOut,
+        refreshProfile,
       }}
     >
       {children}

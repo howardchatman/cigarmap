@@ -1,12 +1,14 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import {
   Check,
@@ -14,11 +16,21 @@ import {
   Zap,
   Star,
   Crown,
+  Sparkles,
+  Globe,
+  BarChart3,
+  MessageSquare,
+  Calendar,
+  TrendingUp,
+  Users,
+  Rocket,
 } from 'lucide-react';
 
 export default function Billing() {
   const { user } = useAuth();
   const supabase = createClient();
+  const searchParams = useSearchParams();
+  const upgradeParam = searchParams.get('upgrade');
 
   // Fetch subscription plans
   const { data: plans, isLoading: plansLoading } = useQuery({
@@ -91,14 +103,67 @@ export default function Billing() {
 
   const isLoading = plansLoading || loungesLoading;
 
+  // Premium features for the hero section
+  const premiumFeatures = [
+    { icon: Sparkles, title: 'AI Social Post Generator', description: 'Create engaging social media posts with AI' },
+    { icon: Calendar, title: 'AI Event Descriptions', description: 'Generate compelling event copy automatically' },
+    { icon: Globe, title: 'Professional Website', description: 'Custom website for your business' },
+    { icon: BarChart3, title: 'Advanced Analytics', description: 'Track visitors, engagement, and trends' },
+    { icon: MessageSquare, title: 'Direct Messaging', description: 'Connect with customers directly' },
+    { icon: TrendingUp, title: 'Featured Placement', description: 'Top placement on homepage and search' },
+  ];
+
   return (
     <div className="space-y-6">
+      {/* Upgrade Alert from Onboarding */}
+      {upgradeParam && (
+        <Alert className="border-amber-500 bg-amber-50">
+          <Rocket className="h-4 w-4 text-amber-600" />
+          <AlertTitle className="text-amber-800">Complete Your Website Setup</AlertTitle>
+          <AlertDescription className="text-amber-700">
+            You selected the {upgradeParam === 'premium' ? 'Premium' : 'Pro'} plan during onboarding.
+            Subscribe below to activate your professional website and all premium features!
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-stone-900">Billing & Plans</h1>
         <p className="text-muted-foreground">
           Upgrade your listings for better visibility and features
         </p>
       </div>
+
+      {/* Premium Features Hero */}
+      <Card className="bg-gradient-to-br from-purple-600 to-purple-800 text-white border-0">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Crown className="h-6 w-6" />
+            <CardTitle className="text-white">Unlock Premium Features</CardTitle>
+          </div>
+          <CardDescription className="text-purple-100">
+            Grow your business with AI-powered tools and premium visibility
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {premiumFeatures.map((feature, i) => {
+              const Icon = feature.icon;
+              return (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">{feature.title}</p>
+                    <p className="text-xs text-purple-200">{feature.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Current Subscriptions */}
       {lounges && lounges.length > 0 && (

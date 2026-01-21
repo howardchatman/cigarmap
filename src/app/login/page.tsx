@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -21,7 +21,7 @@ function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, user, isLoading: authLoading, needsOnboarding } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -32,7 +32,7 @@ function LoginForm() {
     setError('');
     setIsSubmitting(true);
 
-    const { error } = await signIn(email, password);
+    const { error, needsOnboarding } = await signIn(email, password);
 
     if (error) {
       setError(error.message);
@@ -40,8 +40,12 @@ function LoginForm() {
       return;
     }
 
-    // Redirect after successful login
-    router.replace(redirectTo);
+    // Redirect to onboarding if not completed, otherwise to dashboard
+    if (needsOnboarding) {
+      router.replace('/onboarding');
+    } else {
+      router.replace(redirectTo);
+    }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -66,6 +70,17 @@ function LoginForm() {
     setSignUpSuccess(true);
     setIsSubmitting(false);
   };
+
+  // Check if already logged in and redirect
+  useEffect(() => {
+    if (user && !authLoading) {
+      if (needsOnboarding) {
+        router.replace('/onboarding');
+      } else {
+        router.replace(redirectTo);
+      }
+    }
+  }, [user, authLoading, needsOnboarding, router, redirectTo]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 to-amber-50 px-4">

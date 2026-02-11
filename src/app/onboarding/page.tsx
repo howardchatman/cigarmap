@@ -39,6 +39,10 @@ import {
   Check,
   X,
   Camera,
+  Crown,
+  Star,
+  Globe,
+  Monitor,
 } from 'lucide-react';
 
 type BusinessType = 'lounge' | 'mobile_lounge' | 'manufacturer' | 'accessory_company' | 'organization';
@@ -90,7 +94,7 @@ const steps = [
   { id: 2, title: 'Business Info', icon: Building2 },
   { id: 3, title: 'Social Media', icon: Share2 },
   { id: 4, title: 'Images', icon: ImageIcon },
-  { id: 5, title: 'Website Builder', icon: Sparkles },
+  { id: 5, title: 'Plan Benefits', icon: Crown },
 ];
 
 export default function Onboarding() {
@@ -325,8 +329,8 @@ export default function Onboarding() {
         description: 'Your profile has been set up successfully.',
       });
 
-      // Redirect based on whether they want a website
-      if (data.wantsWebsite && data.selectedPlan) {
+      // Redirect based on selected plan
+      if (data.selectedPlan && data.selectedPlan !== 'basic') {
         router.replace('/dashboard/billing?upgrade=' + data.selectedPlan);
       } else {
         router.replace('/dashboard');
@@ -748,139 +752,241 @@ export default function Onboarding() {
             </>
           )}
 
-          {/* Step 5: Website Builder */}
+          {/* Step 5: Plan Benefits */}
           {currentStep === 5 && (
             <>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-amber-600" />
-                  Create Your Website
+                  <Crown className="h-5 w-5 text-amber-600" />
+                  Plan Benefits
                 </CardTitle>
                 <CardDescription>
-                  Get a professional website for your business
+                  Choose the plan that fits your business
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-lg border border-amber-200">
-                  <h3 className="font-semibold text-lg mb-2">
-                    Want a professional website?
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Let us build and host a beautiful website for your business. No technical skills required!
-                  </p>
-
-                  <RadioGroup
-                    value={data.wantsWebsite ? 'yes' : 'no'}
-                    onValueChange={(v) => updateData({ wantsWebsite: v === 'yes' })}
+                <div className="grid gap-4">
+                  {/* Free Plan */}
+                  <button
+                    type="button"
+                    onClick={() => updateData({ selectedPlan: 'basic', wantsWebsite: false })}
+                    className={`p-4 rounded-lg border-2 text-left transition-all ${
+                      data.selectedPlan === 'basic'
+                        ? 'border-amber-600 bg-amber-50'
+                        : 'border-stone-200 hover:border-stone-300'
+                    }`}
                   >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="yes" id="yes" />
-                      <Label htmlFor="yes">Yes, I want a website</Label>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="font-semibold text-lg">Free Listing</span>
+                      <div className="text-right">
+                        <span className="text-2xl font-bold">$0</span>
+                        <span className="text-muted-foreground">/mo</span>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="no" id="no" />
-                      <Label htmlFor="no">No thanks, I'll skip for now</Label>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Business name & address on CigarMap
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Contact info (phone, website)
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Lounge type & basic amenities
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Appear in search results
+                      </li>
+                    </ul>
+                  </button>
+
+                  {/* Pro Plan */}
+                  <button
+                    type="button"
+                    onClick={() => updateData({ selectedPlan: 'pro', wantsWebsite: false })}
+                    className={`p-4 rounded-lg border-2 text-left transition-all relative overflow-hidden ${
+                      data.selectedPlan === 'pro'
+                        ? 'border-amber-600 bg-amber-50'
+                        : 'border-stone-200 hover:border-stone-300'
+                    }`}
+                  >
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-600 to-amber-500 text-white text-xs px-3 py-1 rounded-bl">
+                      Most Popular
                     </div>
-                  </RadioGroup>
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-2">
+                        <Star className="h-5 w-5 text-amber-500" />
+                        <span className="font-semibold text-lg">Pro</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-bold">$49</span>
+                        <span className="text-muted-foreground">/mo</span>
+                      </div>
+                    </div>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Everything in Free
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Verified badge on CigarMap
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Hours of operation display
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Social media links
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Event promotion
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-600" />
+                        Monthly analytics dashboard
+                      </li>
+                    </ul>
+                  </button>
+
+                  {/* Premium Plan */}
+                  <button
+                    type="button"
+                    onClick={() => updateData({ selectedPlan: 'premium' })}
+                    className={`p-4 rounded-lg border-2 text-left transition-all relative overflow-hidden ${
+                      data.selectedPlan === 'premium'
+                        ? 'border-purple-600 bg-purple-50'
+                        : 'border-stone-200 hover:border-stone-300'
+                    }`}
+                  >
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs px-3 py-1 rounded-bl">
+                      Best Value
+                    </div>
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-2">
+                        <Crown className="h-5 w-5 text-purple-500" />
+                        <span className="font-semibold text-lg">Premium</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-bold">$99</span>
+                        <span className="text-muted-foreground">/mo</span>
+                      </div>
+                    </div>
+                    <ul className="space-y-1 text-sm text-muted-foreground">
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-purple-600" />
+                        Everything in Pro
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-purple-600" />
+                        Featured on homepage & city pages
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-purple-600" />
+                        Highlighted in search results
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Globe className="h-4 w-4 text-purple-600" />
+                        <span className="font-medium text-purple-700">Professional website</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-purple-600" />
+                        <span className="font-medium text-purple-700">AI-powered social posts</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-purple-600" />
+                        <span className="font-medium text-purple-700">AI event description generator</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-purple-600" />
+                        Priority customer support
+                      </li>
+                    </ul>
+                  </button>
                 </div>
 
-                {data.wantsWebsite && (
+                {/* Website preview — only shown for Premium */}
+                {data.selectedPlan === 'premium' && (
                   <div className="space-y-4">
-                    <h3 className="font-semibold">Choose Your Plan</h3>
-                    <div className="grid gap-4">
-                      {/* Pro Plan */}
-                      <button
-                        type="button"
-                        onClick={() => updateData({ selectedPlan: 'pro' })}
-                        className={`p-4 rounded-lg border-2 text-left transition-all ${
-                          data.selectedPlan === 'pro'
-                            ? 'border-amber-600 bg-amber-50'
-                            : 'border-stone-200 hover:border-stone-300'
-                        }`}
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <span className="font-semibold text-lg">Pro</span>
-                            <span className="ml-2 text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                              Most Popular
-                            </span>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-2xl font-bold">$49</span>
-                            <span className="text-muted-foreground">/mo</span>
-                          </div>
-                        </div>
-                        <ul className="space-y-1 text-sm text-muted-foreground">
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-green-600" />
-                            Professional website template
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-green-600" />
-                            Verified badge on CigarMap
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-green-600" />
-                            Priority search placement
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-green-600" />
-                            Monthly analytics dashboard
-                          </li>
-                        </ul>
-                      </button>
+                    <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-5 rounded-lg border border-purple-200">
+                      <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
+                        <Globe className="h-5 w-5 text-purple-600" />
+                        Your Professional Website
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Premium includes a beautiful, fully hosted website for your business. No technical skills required!
+                      </p>
 
-                      {/* Premium Plan */}
-                      <button
-                        type="button"
-                        onClick={() => updateData({ selectedPlan: 'premium' })}
-                        className={`p-4 rounded-lg border-2 text-left transition-all relative overflow-hidden ${
-                          data.selectedPlan === 'premium'
-                            ? 'border-purple-600 bg-purple-50'
-                            : 'border-stone-200 hover:border-stone-300'
-                        }`}
-                      >
-                        <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs px-3 py-1 rounded-bl">
-                          Best Value
-                        </div>
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="font-semibold text-lg">Premium</span>
-                          <div className="text-right">
-                            <span className="text-2xl font-bold">$99</span>
-                            <span className="text-muted-foreground">/mo</span>
+                      {/* Website Preview Mockup */}
+                      <div className="bg-white rounded-lg border border-stone-200 overflow-hidden shadow-sm">
+                        {/* Browser Chrome */}
+                        <div className="bg-stone-100 border-b border-stone-200 px-3 py-2 flex items-center gap-2">
+                          <div className="flex gap-1.5">
+                            <div className="w-3 h-3 rounded-full bg-red-400" />
+                            <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                            <div className="w-3 h-3 rounded-full bg-green-400" />
+                          </div>
+                          <div className="flex-1 bg-white rounded px-3 py-1 text-xs text-stone-400 flex items-center gap-1">
+                            <Globe className="h-3 w-3" />
+                            {data.businessName ? data.businessName.toLowerCase().replace(/\s+/g, '') : 'yourlounge'}.cigarmap.net
                           </div>
                         </div>
-                        <ul className="space-y-1 text-sm text-muted-foreground">
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-purple-600" />
-                            Everything in Pro
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-purple-600" />
-                            <span className="font-medium text-purple-700">AI-Powered Social Posts</span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4 text-purple-600" />
-                            <span className="font-medium text-purple-700">AI Event Description Generator</span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-purple-600" />
-                            Featured on homepage & city pages
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-purple-600" />
-                            Event & promotions posting
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-purple-600" />
-                            Direct messaging from users
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Check className="h-4 w-4 text-purple-600" />
-                            Priority customer support
-                          </li>
-                        </ul>
-                      </button>
+                        {/* Website Content Preview */}
+                        <div className="p-4">
+                          {/* Nav Preview */}
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="font-bold text-sm">{data.businessName || 'Your Business'}</span>
+                            <div className="flex gap-3 text-xs text-stone-400">
+                              <span className="font-medium text-stone-600">Home</span>
+                              <span>About</span>
+                              <span>Menu</span>
+                              <span>Events</span>
+                              <span>Contact</span>
+                            </div>
+                          </div>
+                          {/* Hero Preview */}
+                          <div className="bg-gradient-to-r from-stone-800 to-stone-700 rounded-lg p-6 text-white mb-3">
+                            <p className="text-xs text-stone-300 mb-1">Welcome to</p>
+                            <p className="font-bold text-lg">{data.businessName || 'Your Business Name'}</p>
+                            <p className="text-xs text-stone-300 mt-1">{data.description || 'Your premium cigar experience awaits'}</p>
+                          </div>
+                          {/* Content Blocks */}
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="bg-stone-100 rounded p-2">
+                              <div className="w-full h-8 bg-stone-200 rounded mb-1" />
+                              <div className="h-2 bg-stone-200 rounded w-3/4" />
+                            </div>
+                            <div className="bg-stone-100 rounded p-2">
+                              <div className="w-full h-8 bg-stone-200 rounded mb-1" />
+                              <div className="h-2 bg-stone-200 rounded w-3/4" />
+                            </div>
+                            <div className="bg-stone-100 rounded p-2">
+                              <div className="w-full h-8 bg-stone-200 rounded mb-1" />
+                              <div className="h-2 bg-stone-200 rounded w-3/4" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <RadioGroup
+                        value={data.wantsWebsite ? 'yes' : 'no'}
+                        onValueChange={(v) => updateData({ wantsWebsite: v === 'yes' })}
+                        className="mt-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="yes" id="yes" />
+                          <Label htmlFor="yes">Yes, set up my website now</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="no" id="no" />
+                          <Label htmlFor="no">I'll set it up later from my dashboard</Label>
+                        </div>
+                      </RadioGroup>
                     </div>
                   </div>
                 )}
@@ -930,17 +1036,6 @@ export default function Onboarding() {
           </div>
         </Card>
 
-        {/* Skip Link */}
-        {currentStep < 5 && (
-          <p className="text-center mt-4 text-sm text-muted-foreground">
-            <button
-              onClick={() => setCurrentStep(5)}
-              className="text-amber-600 hover:underline"
-            >
-              Skip to website builder
-            </button>
-          </p>
-        )}
       </div>
     </div>
   );

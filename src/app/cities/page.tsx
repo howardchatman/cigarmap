@@ -5,28 +5,29 @@ import { useQuery } from '@tanstack/react-query';
 import { Layout } from '@/components/Layout';
 import { CityCard } from '@/components/CityCard';
 import { createClient } from '@/lib/supabase/client';
-import { ArrowRight, Loader2, MapPin } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const UPCOMING_CITIES = [
-  { name: 'Houston', state: 'TX' },
-  { name: 'Dallas', state: 'TX' },
-  { name: 'Austin', state: 'TX' },
-  { name: 'San Antonio', state: 'TX' },
-  { name: 'Miami', state: 'FL' },
-  { name: 'Tampa', state: 'FL' },
-  { name: 'Atlanta', state: 'GA' },
-  { name: 'Nashville', state: 'TN' },
-  { name: 'Charlotte', state: 'NC' },
-  { name: 'Las Vegas', state: 'NV' },
-  { name: 'New York', state: 'NY' },
-  { name: 'Chicago', state: 'IL' },
-  { name: 'Los Angeles', state: 'CA' },
-  { name: 'Phoenix', state: 'AZ' },
-  { name: 'Denver', state: 'CO' },
-  { name: 'New Orleans', state: 'LA' },
-  { name: 'Detroit', state: 'MI' },
-  { name: 'Philadelphia', state: 'PA' },
+  { name: 'Houston', state: 'TX', image: 'https://images.unsplash.com/photo-1530089711124-9ca31fb9e863?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Dallas', state: 'TX', image: 'https://images.unsplash.com/photo-1545194445-dddb8f4487c6?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Austin', state: 'TX', image: 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=400&h=300&auto=format&fit=crop' },
+  { name: 'San Antonio', state: 'TX', image: 'https://images.unsplash.com/photo-1588580261449-5cd5e1a3920e?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Miami', state: 'FL', image: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Tampa', state: 'FL', image: 'https://images.unsplash.com/photo-1605723517503-3cadb5818a0c?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Atlanta', state: 'GA', image: 'https://images.unsplash.com/photo-1575917649908-c3b32e3fc064?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Nashville', state: 'TN', image: 'https://images.unsplash.com/photo-1545419913-775e4b8e2930?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Charlotte', state: 'NC', image: 'https://images.unsplash.com/photo-1577084381938-22d40eed0e2b?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Las Vegas', state: 'NV', image: 'https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?w=400&h=300&auto=format&fit=crop' },
+  { name: 'New York', state: 'NY', image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Chicago', state: 'IL', image: 'https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Los Angeles', state: 'CA', image: 'https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Phoenix', state: 'AZ', image: 'https://images.unsplash.com/photo-1558645836-e44122a743ee?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Denver', state: 'CO', image: 'https://images.unsplash.com/photo-1619856699906-09e1f4ef34b9?w=400&h=300&auto=format&fit=crop' },
+  { name: 'New Orleans', state: 'LA', image: 'https://images.unsplash.com/photo-1568402102990-bc541580b59f?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Detroit', state: 'MI', image: 'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400&h=300&auto=format&fit=crop' },
+  { name: 'Philadelphia', state: 'PA', image: 'https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?w=400&h=300&auto=format&fit=crop' },
 ];
 
 export default function Cities() {
@@ -110,11 +111,22 @@ export default function Cities() {
             {UPCOMING_CITIES.map((city) => (
               <div
                 key={`${city.name}-${city.state}`}
-                className="bg-white rounded-lg border border-border p-4 text-center hover:border-primary/50 hover:shadow-md transition-all"
+                className="group bg-white rounded-lg border border-border overflow-hidden hover:border-primary/50 hover:shadow-md transition-all"
               >
-                <MapPin className="h-5 w-5 text-primary mx-auto mb-2" />
-                <p className="font-semibold text-foreground text-sm">{city.name}</p>
-                <p className="text-xs text-muted-foreground">{city.state}</p>
+                <div className="relative h-24 overflow-hidden">
+                  <Image
+                    src={city.image}
+                    alt={city.name}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
+                  />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                </div>
+                <div className="p-3 text-center">
+                  <p className="font-semibold text-foreground text-sm">{city.name}</p>
+                  <p className="text-xs text-muted-foreground">{city.state}</p>
+                </div>
               </div>
             ))}
           </div>

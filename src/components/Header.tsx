@@ -45,6 +45,12 @@ export function Header() {
             >
               Contact
             </Link>
+            <Link
+              href="/add-lounge#pricing"
+              className="text-secondary-foreground/80 hover:text-primary transition-colors"
+            >
+              Pricing
+            </Link>
             <Button asChild>
               <Link href="/add-lounge">Add a Lounge</Link>
             </Button>
@@ -87,6 +93,13 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Contact
+              </Link>
+              <Link
+                href="/add-lounge#pricing"
+                className="text-secondary-foreground/80 hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Pricing
               </Link>
               <Button asChild className="w-full">
                 <Link href="/add-lounge" onClick={() => setMobileMenuOpen(false)}>

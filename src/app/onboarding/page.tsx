@@ -807,19 +807,19 @@ export default function Onboarding() {
                   <button
                     type="button"
                     onClick={() => updateData({ selectedPlan: 'pro', wantsWebsite: false })}
-                    className={`p-4 rounded-lg border-2 text-left transition-all relative overflow-hidden ${
+                    className={`p-4 rounded-lg border-2 text-left transition-all ${
                       data.selectedPlan === 'pro'
                         ? 'border-amber-600 bg-amber-50'
                         : 'border-stone-200 hover:border-stone-300'
                     }`}
                   >
-                    <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-600 to-amber-500 text-white text-xs px-3 py-1 rounded-bl">
-                      Most Popular
-                    </div>
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center gap-2">
                         <Star className="h-5 w-5 text-amber-500" />
                         <span className="font-semibold text-lg">Pro</span>
+                        <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium">
+                          Most Popular
+                        </span>
                       </div>
                       <div className="text-right">
                         <span className="text-2xl font-bold">$49</span>
@@ -858,19 +858,19 @@ export default function Onboarding() {
                   <button
                     type="button"
                     onClick={() => updateData({ selectedPlan: 'premium' })}
-                    className={`p-4 rounded-lg border-2 text-left transition-all relative overflow-hidden ${
+                    className={`p-4 rounded-lg border-2 text-left transition-all ${
                       data.selectedPlan === 'premium'
                         ? 'border-purple-600 bg-purple-50'
                         : 'border-stone-200 hover:border-stone-300'
                     }`}
                   >
-                    <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs px-3 py-1 rounded-bl">
-                      Best Value
-                    </div>
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center gap-2">
                         <Crown className="h-5 w-5 text-purple-500" />
                         <span className="font-semibold text-lg">Premium</span>
+                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-medium">
+                          Best Value
+                        </span>
                       </div>
                       <div className="text-right">
                         <span className="text-2xl font-bold">$99</span>

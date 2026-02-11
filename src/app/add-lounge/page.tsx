@@ -120,7 +120,7 @@ export default function AddLounge() {
             </div>
 
             {/* Pricing Comparison */}
-            <div className="grid md:grid-cols-3 gap-8">
+            <div id="pricing" className="grid md:grid-cols-3 gap-8">
               {/* Free Listing */}
               <Card>
                 <CardContent className="p-6">

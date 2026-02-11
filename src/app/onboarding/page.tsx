@@ -324,15 +324,53 @@ export default function Onboarding() {
         if (loungeError) throw loungeError;
       }
 
-      toast({
-        title: 'Welcome to CigarMap!',
-        description: 'Your profile has been set up successfully.',
-      });
-
-      // Redirect based on selected plan
+      // If paid plan selected, go straight to Stripe Checkout
       if (data.selectedPlan && data.selectedPlan !== 'basic') {
-        router.replace('/dashboard/billing?upgrade=' + data.selectedPlan);
+        // Get the lounge we just created
+        const { data: myLounge } = await supabase
+          .from('lounges')
+          .select('id')
+          .eq('owner_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        // Get the subscription plan and its Stripe price ID
+        const { data: plan } = await supabase
+          .from('subscription_plans')
+          .select('id, stripe_price_id_monthly')
+          .eq('slug', data.selectedPlan)
+          .single();
+
+        if (myLounge && plan?.stripe_price_id_monthly) {
+          const res = await fetch('/api/stripe/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              priceId: plan.stripe_price_id_monthly,
+              loungeId: myLounge.id,
+              planId: plan.id,
+            }),
+          });
+
+          const checkoutData = await res.json();
+          if (checkoutData.url) {
+            window.location.href = checkoutData.url;
+            return;
+          }
+        }
+
+        // Fallback to billing page if checkout fails
+        toast({
+          title: 'Welcome to CigarMap!',
+          description: 'Redirecting to billing to complete your subscription.',
+        });
+        router.replace('/dashboard/billing');
       } else {
+        toast({
+          title: 'Welcome to CigarMap!',
+          description: 'Your profile has been set up successfully.',
+        });
         router.replace('/dashboard');
       }
     } catch (error) {

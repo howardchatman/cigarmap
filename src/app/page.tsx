@@ -7,6 +7,7 @@ import { CityCard } from '@/components/CityCard';
 import { Layout } from '@/components/Layout';
 import { createClient } from '@/lib/supabase/client';
 import { MapPin, Plus, ArrowRight, Loader2 } from 'lucide-react';
+import { LeadCapturePopup } from '@/components/LeadCapturePopup';
 
 export default function Home() {
   const supabase = createClient();
@@ -149,6 +150,7 @@ export default function Home() {
           </Button>
         </div>
       </section>
+      <LeadCapturePopup />
     </Layout>
   );
 }

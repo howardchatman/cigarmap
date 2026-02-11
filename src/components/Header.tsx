@@ -46,7 +46,7 @@ export function Header() {
               Contact
             </Link>
             <Link
-              href="/add-lounge#pricing"
+              href="/pricing"
               className="text-secondary-foreground/80 hover:text-primary transition-colors"
             >
               Pricing
@@ -95,7 +95,7 @@ export function Header() {
                 Contact
               </Link>
               <Link
-                href="/add-lounge#pricing"
+                href="/pricing"
                 className="text-secondary-foreground/80 hover:text-primary transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >

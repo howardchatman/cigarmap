@@ -24,6 +24,7 @@ import {
   Cigarette,
   Menu,
   X,
+  Mail,
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -35,6 +36,7 @@ const navItems = [
   { href: '/admin/users', icon: Users, label: 'Users' },
   { href: '/admin/subscriptions', icon: CreditCard, label: 'Subscriptions' },
   { href: '/admin/payments', icon: Receipt, label: 'Payments' },
+  { href: '/admin/leads', icon: Mail, label: 'Leads' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

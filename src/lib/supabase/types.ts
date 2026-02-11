@@ -325,6 +325,39 @@ export interface Database {
           }
         ]
       }
+      leads: {
+        Row: {
+          id: string
+          first_name: string
+          last_name: string
+          email: string
+          city: string
+          cigar_brands: string | null
+          source: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          first_name: string
+          last_name: string
+          email: string
+          city: string
+          cigar_brands?: string | null
+          source?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          first_name?: string
+          last_name?: string
+          email?: string
+          city?: string
+          cigar_brands?: string | null
+          source?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       activity_logs: {
         Row: {
           id: string
@@ -395,3 +428,4 @@ export type SubscriptionPlan = Tables<'subscription_plans'>
 export type Subscription = Tables<'subscriptions'>
 export type Payment = Tables<'payments'>
 export type ActivityLog = Tables<'activity_logs'>
+export type Lead = Tables<'leads'>

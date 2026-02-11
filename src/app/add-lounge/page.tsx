@@ -7,7 +7,7 @@ import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, Star, ArrowRight, Loader2, Store, Shield, TrendingUp } from 'lucide-react';
+import { CheckCircle, Star, ArrowRight, Loader2, Store, Shield, TrendingUp, Crown } from 'lucide-react';
 
 export default function AddLounge() {
   const router = useRouter();
@@ -65,7 +65,7 @@ export default function AddLounge() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                    <Link href="/signup?redirectTo=/onboarding">
+                    <Link href="/login?tab=signup&redirectTo=/onboarding">
                       Create Account
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
@@ -120,16 +120,17 @@ export default function AddLounge() {
             </div>
 
             {/* Pricing Comparison */}
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               {/* Free Listing */}
               <Card>
                 <CardContent className="p-6">
                   <h4 className="text-xl font-bold mb-1">Free Listing</h4>
                   <p className="text-3xl font-bold text-primary mb-4">$0<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                  <p className="text-sm text-muted-foreground mb-4">Get listed</p>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2 text-muted-foreground">
                       <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                      Business name & address listed
+                      Business name & address
                     </li>
                     <li className="flex items-start gap-2 text-muted-foreground">
                       <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
@@ -141,7 +142,7 @@ export default function AddLounge() {
                     </li>
                     <li className="flex items-start gap-2 text-muted-foreground">
                       <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                      Appear in city search results
+                      Appear in search results
                     </li>
                   </ul>
                 </CardContent>
@@ -159,7 +160,8 @@ export default function AddLounge() {
                     <Star className="h-5 w-5 text-amber-500" />
                     Pro Listing
                   </h4>
-                  <p className="text-3xl font-bold text-primary mb-4">$29<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                  <p className="text-3xl font-bold text-primary mb-4">$49<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                  <p className="text-sm text-muted-foreground mb-4">Look professional</p>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2 text-muted-foreground">
                       <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
@@ -183,7 +185,50 @@ export default function AddLounge() {
                     </li>
                     <li className="flex items-start gap-2 text-muted-foreground">
                       <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
-                      Priority in search results
+                      Event promotion
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Premium Listing */}
+              <Card className="border-purple-500/50 relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                    Best Value
+                  </span>
+                </div>
+                <CardContent className="p-6">
+                  <h4 className="text-xl font-bold mb-1 flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-purple-500" />
+                    Premium Listing
+                  </h4>
+                  <p className="text-3xl font-bold text-primary mb-4">$99<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+                  <p className="text-sm text-muted-foreground mb-4">Grow your business</p>
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      Everything in Pro
+                    </li>
+                    <li className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      Featured on homepage
+                    </li>
+                    <li className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      Highlighted in search results
+                    </li>
+                    <li className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      Professional website
+                    </li>
+                    <li className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      Analytics dashboard
+                    </li>
+                    <li className="flex items-start gap-2 text-muted-foreground">
+                      <CheckCircle className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      AI social post generator
                     </li>
                   </ul>
                 </CardContent>

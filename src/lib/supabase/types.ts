@@ -18,6 +18,7 @@ export interface Database {
           role: 'admin' | 'owner'
           avatar_url: string | null
           onboarding_completed: boolean
+          stripe_customer_id: string | null
           created_at: string
           updated_at: string
         }
@@ -29,6 +30,7 @@ export interface Database {
           role?: 'admin' | 'owner'
           avatar_url?: string | null
           onboarding_completed?: boolean
+          stripe_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -40,6 +42,7 @@ export interface Database {
           role?: 'admin' | 'owner'
           avatar_url?: string | null
           onboarding_completed?: boolean
+          stripe_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }

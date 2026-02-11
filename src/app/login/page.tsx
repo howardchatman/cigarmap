@@ -26,6 +26,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
 
   const redirectTo = searchParams.get('redirectTo') || '/dashboard';
+  const defaultTab = searchParams.get('tab') || 'signin';
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +103,7 @@ function LoginForm() {
           </CardDescription>
         </CardHeader>
 
-        <Tabs defaultValue="signin" className="w-full">
+        <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mx-6" style={{ width: 'calc(100% - 48px)' }}>
             <TabsTrigger value="signin">Sign In</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
